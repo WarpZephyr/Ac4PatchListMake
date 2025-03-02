@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Ac4PatchListMake": {
+      "commandName": "Project",
+      "commandLineArgs": "./"
+    }
+  }
+}
