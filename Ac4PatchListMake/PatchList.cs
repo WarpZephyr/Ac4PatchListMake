@@ -1,19 +1,15 @@
 ﻿using Ac4PatchListMake.Extensions.Xml;
 using System.Collections.Generic;
-using System.IO;
 using System.Xml;
 
 namespace Ac4PatchListMake
 {
     public class PatchList
     {
-        private const string EncrName = "_enc.bin";
         public List<PatchFile> Files { get; set; }
-        public string Url { get; set; }
 
-        public PatchList(string url)
+        public PatchList()
         {
-            Url = url;
             Files = [];
         }
 
@@ -23,8 +19,7 @@ namespace Ac4PatchListMake
             xml.Load(xmlPath);
 
             XmlNode patchNode = xml.GetNodeOrThrow("patch");
-            string url = patchNode.ReadStringOrThrowIfWhiteSpace("url");
-            var patchList = new PatchList(url);
+            var patchList = new PatchList();
 
             XmlNodeList? fileNodes = patchNode.SelectNodes("file");
             if (fileNodes != null)
@@ -32,11 +27,18 @@ namespace Ac4PatchListMake
                 foreach (XmlNode fileNode in fileNodes)
                 {
                     string path = fileNode.ReadStringOrThrowIfWhiteSpace("path");
-                    string name = fileNode.ReadStringOrDefault("name", $"{Path.GetFileNameWithoutExtension(path)}{EncrName}");
+                    string download = fileNode.ReadStringOrThrowIfWhiteSpace("download");
                     string dir = fileNode.ReadStringOrDefault("dir", "install:/");
                     string version = fileNode.ReadStringOrDefault("version", "1.0");
+                    var patchFile = new PatchFile()
+                    {
+                        Path = path,
+                        Download = download,
+                        Directory = dir,
+                        Version = version,
+                    };
 
-                    patchList.Files.Add(new PatchFile(path, name, dir, version));
+                    patchList.Files.Add(patchFile);
                 }
             }
 
@@ -45,18 +47,10 @@ namespace Ac4PatchListMake
 
         public class PatchFile
         {
-            public string Path { get; set; }
-            public string Name { get; set; }
-            public string Directory { get; set; }
-            public string Version { get; set; }
-
-            public PatchFile(string path, string name, string dir, string version)
-            {
-                Path = path;
-                Name = name;
-                Directory = dir;
-                Version = version;
-            }
+            public required string Path { get; init; }
+            public required string Download { get; init; }
+            public required string Directory { get; init; }
+            public required string Version { get; init; }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace Ac4PatchListMake.Helpers
 {
@@ -47,5 +48,32 @@ namespace Ac4PatchListMake.Helpers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string TrimTrailingForwardSlashes(string path)
             => path.TrimEnd('/');
+
+        // This also helps for URLs since we don't care about any kind of starting context
+        // Only the final bit of the path
+        internal static string GetFileName(string path)
+        {
+            // Try to find last separator
+            int index = path.LastIndexOf('/');
+            if (index == -1)
+                index = path.LastIndexOf('\\');
+            if (index == -1)
+                index = path.LastIndexOf(Path.DirectorySeparatorChar);
+            if (index == -1)
+                index = path.LastIndexOf(Path.AltDirectorySeparatorChar);
+
+            if (index > -1)
+            {
+                // If the last separator is the final thing in the path, return empty
+                int finalIndex = index + 1;
+                if (finalIndex >= path.Length)
+                    return string.Empty;
+
+                return path[finalIndex..];
+            }
+
+            // If we didn't find any separators just return the path
+            return path;
+        }
     }
 }

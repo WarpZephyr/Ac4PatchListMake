@@ -1,15 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?> 
 <patch>
-	<url>http://ac4.sega.com</url>
 	<file>
 		<path>EBOOT.BIN</path>
-		<name>patch.bin</name>
+		<download>http://ac4.sega.com/patch.bin</download>
 		<dir>install:/</dir>
 		<version>1.0</version>
 	</file>
 	<file>
 		<path>regulation.bin</path>
-		<name>regulation_enc.bin</name>
+		<download>http://ac4.sega.com/regulation_enc.bin</download>
 		<dir>install:/</dir>
 		<version>1.0</version>
 	</file>

@@ -24,7 +24,6 @@ namespace Ac4PatchListMake
 
         public PatchFileList Build()
         {
-            string url = PathHelper.TrimTrailingForwardSlashes(Patches.Url);
             foreach (var file in Patches.Files)
             {
                 string inputPath = Path.Combine(InputFolder, file.Path);
@@ -39,9 +38,8 @@ namespace Ac4PatchListMake
                 byte[] encBytes = Cipher.Encrypt(encr.Write());
                 string hash = MD5.HashData(encBytes).ToHex();
 
-                string outputPath = Path.Combine(InputFolder, file.Name);
-                string path = PathHelper.ToForwardUnrootedPath(file.Name);
-                string pathUrl = $"{url}/{path}";
+                string outputPath = Path.Combine(InputFolder, PathHelper.GetFileName(file.Download));
+                string path = PathHelper.ToForwardSlashes(file.Download);
 
                 string? outputFolder = Path.GetDirectoryName(outputPath);
                 if (string.IsNullOrWhiteSpace(outputFolder))
@@ -56,7 +54,7 @@ namespace Ac4PatchListMake
                 {
                     Dir = file.Directory,
                     MD5 = hash,
-                    Path = pathUrl,
+                    Path = path,
                     SizeEnc = encBytes.Length.ToString(),
                     SizeOrg = inputBytes.Length.ToString(),
                     Version = file.Version
